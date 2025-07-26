@@ -9,5 +9,4 @@ public class KendriyaVidyalayTestDriver {
 		Database database = new Database();
 		database.connect();
 	}
-
 }
