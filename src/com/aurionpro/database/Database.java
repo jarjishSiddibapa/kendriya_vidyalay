@@ -2,10 +2,7 @@ package com.aurionpro.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class Database {
@@ -14,7 +11,6 @@ public class Database {
 
 	public void connect() {
         try {
-            // Load variables from .env file
             Dotenv dotenv = Dotenv.load();
 
             String url = dotenv.get("DB_URL");
