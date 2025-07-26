@@ -2,12 +2,45 @@
 .classpath
 .project
 .settings/
-*.jar
 
-# Build output
+# Maven-specific files and folders
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# Maven Wrapper binary JAR (the scripts should be committed)
+.mvn/wrapper/maven-wrapper.jar
+
+# Java build output (optional/redundant with target/)
 bin/
 
-# Maven/Gradle output (optional, if used)
-target/
-build/
+# Package files (if any randomly appear outside target/)
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
 
+# Log files and crash reports
+*.log
+hs_err_pid*
+
+# Editor/OS files
+*.swp
+*~
+.DS_Store
+.vscode/
+
+# IDE-specific (if you use IntelliJ as well)
+.idea/
+*.iml
+
+# Environment variables, secrets, etc.
+.env

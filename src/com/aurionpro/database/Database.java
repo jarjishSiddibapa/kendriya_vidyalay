@@ -6,23 +6,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class Database {
 
 	private Connection connection = null;
 
 	public void connect() {
-		try {
-			Class.forName("org.postgresql.Driver");
+        try {
+            // Load variables from .env file
+            Dotenv dotenv = Dotenv.load();
 
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/kendriya_vidyalay_db", "postgres",
-					"root");
-			System.out.println("Connection successful!");
+            String url = dotenv.get("DB_URL");
+            String user = dotenv.get("DB_USER");
+            String password = dotenv.get("DB_PASSWORD");
 
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Connection successful!");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 	
 	
