@@ -8,20 +8,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
-	Connection connection;
+
+	private Connection connection = null;
+
 	public void connect() {
 		try {
 			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5433/kendriya_vidyalay_db", "postgres",
-					"cheeseMuffins@007");
+
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/kendriya_vidyalay_db", "postgres",
+					"root");
 			System.out.println("Connection successful!");
-		} catch (SQLException e) {
+
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
+	
+	
+	public Connection getConnection() {
+		return connection;
+	}
 }
