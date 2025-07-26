@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings/
+*.jar
 
 # Build output
 bin/
@@ -9,3 +10,4 @@ bin/
 # Maven/Gradle output (optional, if used)
 target/
 build/
+
