@@ -32,10 +32,11 @@ public class CourseManagement {
 
 				System.out.println("1> Show All Courses");
 				System.out.println("2> Add New Courses");
-				System.out.println("3> Add Subject to Course");
-				System.out.println("4> Delete Course");
-				System.out.println("5> View Course");
-				System.out.println("6> Exit");
+				System.out.println("3> Create Subject");
+				System.out.println("4> Add Subject to Course");
+				System.out.println("5> Delete Course");
+				System.out.println("6> View Course");
+				System.out.println("7> Exit");
 
 				int input = scanner.nextInt();
 				switch (input) {
@@ -48,18 +49,22 @@ public class CourseManagement {
 					break;
 				}
 				case 3: {
-					addSubject();
+					addNewSubject();
 					break;
 				}
 				case 4: {
-					deleteCourse();
+					addNewSubject();
 					break;
 				}
 				case 5: {
-					showAllCourse();
+					deleteCourse();
 					break;
 				}
 				case 6: {
+					showAllCourse();
+					break;
+				}
+				case 7: {
 					System.out.println("Exiting From Course Management ... ");
 					return;
 				}
@@ -78,30 +83,33 @@ public class CourseManagement {
 		}
 	}
 
-	private void addSubject() {
+	private void addNewSubject() {
 		try {
 			System.out.print("Enter Subject Name: ");
 			String subjectName = scanner.next();
-            
+
+			if (dbManager.isStringExist(subjectName, "subject_name", Table.Subjects)) {
+				System.out.println(subjectName + " already exists.");
+				return;
+			}
+
 			String insertQuery = "INSERT INTO Subjects (subject_name) VALUES (?)";
-           
 			try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
 				preparedStatement.setString(1, subjectName);
-				
 
 				int rowsInserted = preparedStatement.executeUpdate();
 				if (rowsInserted > 0) {
 					System.out.println("Subject added successfully.");
 				} else {
-					System.out.println("Failed to add Subject.");
+					System.out.println("Failed to add subject.");
 				}
+			} catch (SQLException e) {
+				System.out.println("Database error occurred.");
+				e.printStackTrace();
 			}
 
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid input format.");
-		} catch (SQLException e) {
-			System.out.println("Database error occurred.");
-			e.printStackTrace();
 		} catch (Exception e) {
 			System.out.println("Unexpected error occurred.");
 			e.printStackTrace();
@@ -113,7 +121,7 @@ public class CourseManagement {
 			System.out.print("Enter Course ID: ");
 			int id = scanner.nextInt();
 			if (dbManager.isExist(id, Table_ID.course_id, Table.Courses)) {
-				dbManager.delete(id,Table_ID.course_id, Table.Courses);
+				dbManager.delete(id, Table_ID.course_id, Table.Courses);
 			} else {
 				System.out.println(id + " this Course Id Not Exist");
 			}
@@ -168,7 +176,7 @@ public class CourseManagement {
 		String query = "SELECT * FROM courses";
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query);
 				ResultSet resultSet = preparedStatement.executeQuery()) {
-			Print.printTable(resultSet);
+			    Print.printTable(resultSet);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -41,4 +41,20 @@ public class DBManager {
 			e.printStackTrace();
 		}
 	}
+
+	public boolean isStringExist(String str, String column_name, Table table) {
+		try {
+			prepareStatement = connection.prepareStatement("select 1 from "+table+" where " + column_name + "=?");
+			prepareStatement.setString(1, str);
+
+			ResultSet result = prepareStatement.executeQuery();
+			if (result.next()) {
+				return true;
+			}
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }
