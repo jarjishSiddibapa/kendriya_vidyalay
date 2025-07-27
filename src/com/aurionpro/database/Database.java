@@ -7,10 +7,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class Database {
 
-	private Connection connection = null;
+	private static Connection connection = null;
 
-	public void connect() {
-        try {
+	private static void connect() {
+		try {
             Dotenv dotenv = Dotenv.load();
 
             String url = dotenv.get("DB_URL");
@@ -24,11 +24,11 @@ public class Database {
             e.printStackTrace();
         }
     }
-
-
 	
-	
-	public Connection getConnection() {
+	public static Connection getConnection() {
+		if (connection == null) {
+			connect();
+		} 
 		return connection;
 	}
 }
