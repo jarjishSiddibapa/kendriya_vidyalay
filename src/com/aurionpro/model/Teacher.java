@@ -14,7 +14,7 @@ public class Teacher {
     private TeacherProfile profile; // has a relationship!!!
 	
 	public Teacher() {
-		
+		super();
 	}
 	
     public Teacher(String name, String mobileNumber, Date dob, double salary) {

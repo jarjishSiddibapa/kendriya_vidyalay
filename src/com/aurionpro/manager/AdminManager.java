@@ -3,64 +3,76 @@ package com.aurionpro.manager;
 import java.sql.Connection;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.List;
 
 import com.aurionpro.database.DBManager;
 import com.aurionpro.manager.cource.CourseManagement;
+import com.aurionpro.util.Printer;
 
-public class AdminManager{
-	private Connection connection;
-	private Scanner scanner;
-	private DBManager dbManager;
-	public AdminManager(Connection connection, Scanner scanner, DBManager dbManager) {
-		this.connection = connection;
-		this.scanner = scanner;
-	    this.dbManager =  dbManager;
-	}
-	
-	public void start() {
+/**
+ * Manages the administrative menu of the application. 
+ * Handles navigation to different admin modules.
+ */
+public class AdminManager {
+    private Connection connection;
+    private Scanner scanner;
+    private DBManager dbManager;
 
-		while (true) {
-			try {
-				System.out.println();
-				
-				System.out.println("1> Student Management");
-				System.out.println("2> Courses Management");
-				System.out.println("3> teacher Management");
-				
-				
-				
-				int input = scanner.nextInt();
-				switch (input) {
-				case 1: {
-					
-					break;
-				}
-				case 2: {
-					CourseManagement courseManagement = new CourseManagement(connection,scanner,dbManager);
-					courseManagement.start();
-					break;
-				}
-				case 3: {
-					CourseManagement courseManagement = new CourseManagement(connection,scanner,dbManager);
-					courseManagement.start();
-					break;
-				}
-				case 6: {
-					System.out.println("Exiting... ");
-					return ;				}
-				default:
-					throw new IllegalArgumentException("Unexpected value: " + input);
-				}
+    /**
+     * Constructs the AdminManager with required dependencies.
+     */
+    public AdminManager(Connection connection, Scanner scanner, DBManager dbManager) {
+        this.connection = connection;
+        this.scanner = scanner;
+        this.dbManager = dbManager;
+    }
 
-			} catch (InputMismatchException e) {
-				System.out.println("\nPlease enter numbers where required.");
-				scanner.nextLine();
-			} catch (Exception e) {
-				System.out.println("\nSomething went wrong: " + e.getMessage());
-				e.printStackTrace();
-			}
+    /**
+     * Starts the interactive admin menu loop.
+     */
+    public void start() {
+        while (true) {
+            try {
+                // Display admin menu using Printer utility
+                List<String> adminMenuOptions = Arrays.asList(
+                        "1> Student Management",
+                        "2> Course Management",
+                        "3> Teacher Management",
+                        "6> Exit"
+                );
+                Printer.printMenu("Admin Menu", adminMenuOptions);
+                Printer.printPrompt("Enter your choice:");
 
-		}
-	}
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume leftover newline
 
+                switch (choice) {
+                    case 1:
+                        Printer.printInfoMessage("Student Management not yet implemented.");
+                        break;
+                    case 2:
+                        CourseManagement courseManagement = new CourseManagement(connection, scanner, dbManager);
+                        courseManagement.start();
+                        break;
+                    case 3:
+                        // Intended for TeacherManagement; currently placeholder
+                        Printer.printInfoMessage("Teacher Management not yet implemented.");
+                        TeacherManagement teacherManagement = new TeacherManagement(connection, scanner, dbManager);
+                        break;
+                    case 6:
+                        Printer.printSuccessMessage("Exiting...");
+                        return;
+                    default:
+                        Printer.printErrorMessage("Unexpected value: " + choice + ". Please choose a valid option.");
+                }
+            } catch (InputMismatchException e) {
+                Printer.printErrorMessage("Please enter numbers where required.");
+                scanner.nextLine(); // clear invalid input
+            } catch (Exception e) {
+                Printer.printErrorMessage("Something went wrong: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 }

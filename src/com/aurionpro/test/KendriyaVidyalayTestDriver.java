@@ -11,7 +11,7 @@ public class KendriyaVidyalayTestDriver {
 	public static void main(String[] args) {
 		System.out.println("Welcome to Kendriya Vidyalay. ❤️");
 		Database database = new Database();
-		database.connect();
+		database.getConnection();
 		
 		Scanner scanner = new Scanner(System.in);
 	    DBManager dbManager = new DBManager(database.getConnection());
