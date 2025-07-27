@@ -1,14 +1,19 @@
 package com.aurionpro.manager;
 
-import com.aurionpro.constant.Table;
-import com.aurionpro.constant.Table_ID;
-import com.aurionpro.database.Database;
-import com.aurionpro.database.DBManager;
-import com.aurionpro.model.Teacher;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.aurionpro.constant.Table;
+import com.aurionpro.constant.Table_ID;
+import com.aurionpro.database.DBManager;
+import com.aurionpro.database.Database;
+import com.aurionpro.model.Teacher;
+import com.aurionpro.util.Printer;
 
 public class TeacherManager {
     private static final Connection connection = Database.getConnection();
@@ -26,9 +31,9 @@ public class TeacherManager {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 teacher.setTeacherId(rs.getInt("teacher_id"));
-                System.out.println("Teacher added successfully!");
+                Printer.printSuccessMessage("Teacher added successfully!");
             } else {
-                System.out.println("Teacher NOT added. Duplicate mobile number detected.");
+                Printer.printErrorMessage("Teacher NOT added. Duplicate mobile number detected.");
                 teacher.setTeacherId(0);
             }
         } catch (SQLException e) {
