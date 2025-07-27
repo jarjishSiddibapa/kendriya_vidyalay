@@ -1,13 +1,14 @@
 package com.aurionpro.manager;
 
 import java.sql.Connection;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 import com.aurionpro.database.DBManager;
 import com.aurionpro.manager.cource.CourseManagement;
+import com.aurionpro.manager.teacher.TeacherManagement;
 import com.aurionpro.util.Printer;
 
 /**
