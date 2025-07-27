@@ -16,6 +16,9 @@ buildNumber.properties
 # Maven Wrapper binary JAR (the scripts should be committed)
 .mvn/wrapper/maven-wrapper.jar
 
+.metadata/
+
+
 # Java build output (optional/redundant with target/)
 bin/
 

@@ -6,7 +6,7 @@ public class TeacherProfile {
 	private String email;
 	private String alternateNumber;
 	private String bloodGroup;
-	private int teacherId; // acting as a foreign key reference to Teacher
+	private int teacherId; 
 	
 	public TeacherProfile(String city, String email, String alternateNumber, String bloodGroup, int teacherId) {
         this.city = city;
