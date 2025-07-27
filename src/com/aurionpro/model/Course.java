@@ -1,5 +1,5 @@
 package com.aurionpro.model;
 
-public class Cource {
+public class Course {
 
 }
