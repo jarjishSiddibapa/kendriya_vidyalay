@@ -1,16 +1,15 @@
-package com.aurionpro.manager;
-
-import com.aurionpro.database.DBManager;
-import com.aurionpro.manager.TeacherManager;
-import com.aurionpro.model.Teacher;
-import com.aurionpro.util.Printer;
+package com.aurionpro.manager.teacher;
 
 import java.sql.Connection;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Arrays;
+
+import com.aurionpro.database.DBManager;
+import com.aurionpro.model.Teacher;
+import com.aurionpro.util.Printer;
 
 /**
  * Handles interactive menu-based management for teachers.

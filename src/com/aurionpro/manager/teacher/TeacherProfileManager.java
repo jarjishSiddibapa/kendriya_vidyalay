@@ -1,4 +1,4 @@
-package com.aurionpro.manager;
+package com.aurionpro.manager.teacher;
 
 import java.sql.*;
 
