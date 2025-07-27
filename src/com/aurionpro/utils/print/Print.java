@@ -9,6 +9,7 @@ import java.util.List;
 public class Print {
 
 	public static void printTable(ResultSet resultSet) throws SQLException {
+		System.out.println();
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		int columnCount = metaData.getColumnCount();
 
