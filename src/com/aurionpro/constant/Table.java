@@ -4,5 +4,5 @@ public enum Table {
   Courses,
   Students,
   Subjects,
-  Teachers
+  Teachers,
 }
