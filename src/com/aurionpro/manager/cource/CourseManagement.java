@@ -11,7 +11,7 @@ import com.aurionpro.constant.Table;
 import com.aurionpro.constant.Table_ID;
 import com.aurionpro.constant.Table_Map;
 import com.aurionpro.database.DBManager;
-import com.aurionpro.utils.print.Print;
+import com.aurionpro.util.Printer;
 
 public class CourseManagement {
 	private Connection connection;
@@ -132,7 +132,7 @@ public class CourseManagement {
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				stmt.setInt(1, courseId);
 				ResultSet rs = stmt.executeQuery();
-				Print.printTable(rs);
+				Printer.printTable(rs);
 			} catch (SQLException e) {
 				System.out.println(" Error fetching subjects: " + e.getMessage());
 			}
@@ -160,7 +160,7 @@ public class CourseManagement {
 			try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 				stmt.setInt(1, courseId);
 				ResultSet rs = stmt.executeQuery();
-				Print.printTable(rs);
+				Printer.printTable(rs);
 			} catch (SQLException e) {
 				System.out.println(" Error fetching subjects: " + e.getMessage());
 			}
@@ -330,7 +330,7 @@ public class CourseManagement {
 		String query = "SELECT * FROM courses";
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query);
 				ResultSet resultSet = preparedStatement.executeQuery()) {
-			Print.printTable(resultSet);
+			Printer.printTable(resultSet);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -341,7 +341,7 @@ public class CourseManagement {
 		String query = "SELECT * FROM Subjects";
 		try (PreparedStatement preparedStatement = connection.prepareStatement(query);
 				ResultSet resultSet = preparedStatement.executeQuery()) {
-			Print.printTable(resultSet);
+			Printer.printTable(resultSet);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

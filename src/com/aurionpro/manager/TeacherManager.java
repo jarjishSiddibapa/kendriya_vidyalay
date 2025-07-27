@@ -1,180 +1,131 @@
 package com.aurionpro.manager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.aurionpro.constant.Table;
+import com.aurionpro.constant.Table_ID;
+import com.aurionpro.database.Database;
+import com.aurionpro.database.DBManager;
+import com.aurionpro.model.Teacher;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aurionpro.database.Database;
-import com.aurionpro.model.Teacher;
-
 public class TeacherManager {
-    private static Connection connection = Database.getConnection();
+    private static final Connection connection = Database.getConnection();
+    private static final DBManager dbManager = new DBManager(connection);
 
     public static void addTeacher(Teacher teacher) {
         String insertQuery = "INSERT INTO teachers (name, mobile_number, dob, salary) VALUES (?, ?, ?, ?) "
-                           + "ON CONFLICT (mobile_number) DO NOTHING RETURNING teacher_id";
-        try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-            insertStatement.setString(1, teacher.getName());
-            insertStatement.setString(2, teacher.getMobileNumber());
-            insertStatement.setDate(3, teacher.getDob());
-            insertStatement.setDouble(4, teacher.getSalary());
+                + "ON CONFLICT (mobile_number) DO NOTHING RETURNING teacher_id";
+        try (PreparedStatement ps = connection.prepareStatement(insertQuery)) {
+            ps.setString(1, teacher.getName());
+            ps.setString(2, teacher.getMobileNumber());
+            ps.setDate(3, teacher.getDob());
+            ps.setDouble(4, teacher.getSalary());
 
-            ResultSet rs = insertStatement.executeQuery();
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("teacher_id");
-                teacher.setTeacherId(id);
+                teacher.setTeacherId(rs.getInt("teacher_id"));
                 System.out.println("Teacher added successfully!");
             } else {
                 System.out.println("Teacher NOT added. Duplicate mobile number detected.");
                 teacher.setTeacherId(0);
             }
-        } catch (SQLException exception) {
-            System.out.println("Error while adding teacher: " + exception.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error while adding teacher: " + e.getMessage());
             teacher.setTeacherId(0);
         }
     }
 
-
-
     public static List<Teacher> getAllTeachers() {
+        String query = "SELECT teacher_id, name, mobile_number, dob, salary, created_at, updated_at FROM teachers";
         List<Teacher> teachers = new ArrayList<>();
-        String selectQuery = "SELECT teacher_id, name, mobile_number, dob, salary, created_at, updated_at FROM teachers";
-
-        try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery);
-             ResultSet resultSet = selectStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setTeacherId(resultSet.getInt("teacher_id"));
-                teacher.setName(resultSet.getString("name"));
-                teacher.setMobileNumber(resultSet.getString("mobile_number"));
-                teacher.setDob(resultSet.getDate("dob"));
-                teacher.setSalary(resultSet.getDouble("salary"));
-                teacher.setCreatedAt(resultSet.getTimestamp("created_at"));
-                teacher.setUpdatedAt(resultSet.getTimestamp("updated_at"));
-                teachers.add(teacher);
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                teachers.add(mapResultSetToTeacher(rs));
             }
-        } catch (SQLException exception) {
-            System.out.println("Error fetching teachers: " + exception.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error fetching teachers: " + e.getMessage());
         }
-
         return teachers;
     }
 
     public static Teacher getTeacherById(int teacherId) {
-        String selectQuery = "SELECT teacher_id, name, mobile_number, dob, salary, created_at, updated_at FROM teachers WHERE teacher_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(selectQuery)) {
-            statement.setInt(1, teacherId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    Teacher teacher = new Teacher();
-                    teacher.setTeacherId(resultSet.getInt("teacher_id"));
-                    teacher.setName(resultSet.getString("name"));
-                    teacher.setMobileNumber(resultSet.getString("mobile_number"));
-                    teacher.setDob(resultSet.getDate("dob"));
-                    teacher.setSalary(resultSet.getDouble("salary"));
-                    teacher.setCreatedAt(resultSet.getTimestamp("created_at"));
-                    teacher.setUpdatedAt(resultSet.getTimestamp("updated_at"));
-                    return teacher;
+        if (!dbManager.isExist(teacherId, Table_ID.teacher_id, Table.Teachers)) {
+            System.out.println("No teacher found with ID: " + teacherId);
+            return null;
+        }
+        String query = "SELECT teacher_id, name, mobile_number, dob, salary, created_at, updated_at FROM teachers WHERE teacher_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, teacherId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToTeacher(rs);
                 }
             }
-        } catch (SQLException exception) {
-            System.out.println("Error fetching teacher: " + exception.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error fetching teacher: " + e.getMessage());
         }
-        return null; // Teacher not found
+        return null;
     }
 
     public static void deleteTeacher(int teacherId) {
-        String deleteQuery = "DELETE FROM teachers WHERE teacher_id = ?";
-        try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
-            deleteStatement.setInt(1, teacherId);
-            int rowsAffected = deleteStatement.executeUpdate();
+        if (!dbManager.isExist(teacherId, Table_ID.teacher_id, Table.Teachers)) {
+            System.out.println("No teacher found with ID: " + teacherId);
+            return;
+        }
+        dbManager.delete(teacherId, Table_ID.teacher_id, Table.Teachers);
+    }
 
-            if (rowsAffected > 0) {
-                System.out.println("Teacher deleted successfully (ID: " + teacherId + ").");
-                return;
+    // --- Helper for Update Operations ---
+    private static void updateTeacherField(int teacherId, String field, Object value) {
+        String query = "UPDATE teachers SET " + field + " = ?, updated_at = CURRENT_TIMESTAMP WHERE teacher_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setObject(1, value);
+            ps.setInt(2, teacherId);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Teacher " + field + " updated successfully for ID: " + teacherId + ".");
+            } else {
+                System.out.println("No teacher found with ID: " + teacherId + ".");
             }
-            System.out.println("No teacher found with ID: " + teacherId + ".");
-        } catch (SQLException exception) {
-            System.out.println("Error deleting teacher: " + exception.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error updating teacher " + field + ": " + e.getMessage());
         }
     }
-    
+
     public static void updateTeacherName(int teacherId, String newName) {
-        String updateQuery = "UPDATE teachers SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE teacher_id = ?";
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            updateStatement.setString(1, newName);
-            updateStatement.setInt(2, teacherId);
-            int rowsAffected = updateStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Teacher name updated successfully for ID: " + teacherId + ".");
-            } else {
-                System.out.println("No teacher found with ID: " + teacherId + ".");
-            }
-        } catch (SQLException exception) {
-            System.out.println("Error updating teacher name: " + exception.getMessage());
-        }
-    }
-
-    public static void updateTeacherMobileNumber(int teacherId, String newMobileNumber) {
-        String updateQuery = "UPDATE teachers SET mobile_number = ?, updated_at = CURRENT_TIMESTAMP WHERE teacher_id = ?";
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            updateStatement.setString(1, newMobileNumber);
-            updateStatement.setInt(2, teacherId);
-            int rowsAffected = updateStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Teacher mobile number updated successfully for ID: " + teacherId + ".");
-            } else {
-                System.out.println("No teacher found with ID: " + teacherId + ", or mobile number already exists for another teacher.");
-            }
-        } catch (SQLException exception) {
-            // Unique violation code for PostgreSQL
-            if ("23505".equals(exception.getSQLState())) {
-                System.out.println("Update failed: mobile number already exists for another teacher.");
-            } else {
-                System.out.println("Error updating teacher mobile number: " + exception.getMessage());
-            }
-        }
-    }
-
-    
-    public static void updateTeacherDateOfBirth(int teacherId, java.sql.Date newDateOfBirth) {
-        String updateQuery = "UPDATE teachers SET dob = ?, updated_at = CURRENT_TIMESTAMP WHERE teacher_id = ?";
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            updateStatement.setDate(1, newDateOfBirth);
-            updateStatement.setInt(2, teacherId);
-            int rowsAffected = updateStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Teacher date of birth updated successfully for ID: " + teacherId + ".");
-            } else {
-                System.out.println("No teacher found with ID: " + teacherId + ".");
-            }
-        } catch (SQLException exception) {
-            System.out.println("Error updating teacher date of birth: " + exception.getMessage());
-        }
+        updateTeacherField(teacherId, "name", newName);
     }
 
     public static void updateTeacherSalary(int teacherId, double newSalary) {
-        String updateQuery = "UPDATE teachers SET salary = ?, updated_at = CURRENT_TIMESTAMP WHERE teacher_id = ?";
-        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            updateStatement.setDouble(1, newSalary);
-            updateStatement.setInt(2, teacherId);
-            int rowsAffected = updateStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Teacher salary updated successfully for ID: " + teacherId + ".");
-            } else {
-                System.out.println("No teacher found with ID: " + teacherId + ".");
-            }
-        } catch (SQLException exception) {
-            System.out.println("Error updating teacher salary: " + exception.getMessage());
-        }
+        updateTeacherField(teacherId, "salary", newSalary);
     }
 
+    public static void updateTeacherDateOfBirth(int teacherId, Date newDateOfBirth) {
+        updateTeacherField(teacherId, "dob", newDateOfBirth);
+    }
+
+    public static void updateTeacherMobileNumber(int teacherId, String newMobileNumber) {
+        // Use DBManager for unique constraint
+        if (dbManager.isStringExist(newMobileNumber, "mobile_number", Table.Teachers)) {
+            System.out.println("Update failed: mobile number already exists for another teacher.");
+            return;
+        }
+        updateTeacherField(teacherId, "mobile_number", newMobileNumber);
+    }
+
+    // --- Util: Map ResultSet row to Teacher object ---
+    private static Teacher mapResultSetToTeacher(ResultSet rs) throws SQLException {
+        Teacher teacher = new Teacher();
+        teacher.setTeacherId(rs.getInt("teacher_id"));
+        teacher.setName(rs.getString("name"));
+        teacher.setMobileNumber(rs.getString("mobile_number"));
+        teacher.setDob(rs.getDate("dob"));
+        teacher.setSalary(rs.getDouble("salary"));
+        teacher.setCreatedAt(rs.getTimestamp("created_at"));
+        teacher.setUpdatedAt(rs.getTimestamp("updated_at"));
+        return teacher;
+    }
 }
