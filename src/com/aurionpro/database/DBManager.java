@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.aurionpro.constant.Table;
 import com.aurionpro.constant.Table_ID;
+import com.aurionpro.constant.Table_Map;
 
 public class DBManager {
 	private PreparedStatement prepareStatement;
@@ -14,6 +15,21 @@ public class DBManager {
 	
 	public DBManager(Connection connection) {
 		this.connection = connection;
+	}
+	public boolean isMapExist(int id1,int id2,Table_ID id1_name,Table_ID id2_name,Table_Map table_Map) {
+		try {
+			prepareStatement = connection.prepareStatement("select 1 from "+table_Map+" where " + id1_name + "=? and "+id2_name +"=?");
+			prepareStatement.setInt(1, id1);
+			prepareStatement.setInt(2, id2);
+			ResultSet result = prepareStatement.executeQuery();
+			if (result.next()) {
+				return true;
+			}
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean isExist(int id ,Table_ID table_id,Table table ) {
