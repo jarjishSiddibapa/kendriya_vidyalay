@@ -1,5 +1,7 @@
 package com.aurionpro.util;
 
+import com.aurionpro.model.Teacher;
+
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for printing tabular data, menus, and messages
+ * Utility class for printing tabular data, entity info, menus, prompts, and messages.
  */
 public class Printer {
 
@@ -77,7 +79,7 @@ public class Printer {
         Class<?> objectClass = objectList.get(0).getClass();
         Field[] fields = objectClass.getDeclaredFields();
 
-        // Extract field names and widths
+        // Extract field names and initial column widths
         List<String> columnNames = new ArrayList<>();
         List<Integer> columnWidths = new ArrayList<>();
         for (Field field : fields) {
@@ -87,7 +89,7 @@ public class Printer {
             columnWidths.add(fieldName.length());
         }
 
-        // Build data rows, adjust column widths
+        // Build data rows and adjust column widths for each value
         List<String[]> allRows = new ArrayList<>();
         for (T objectInstance : objectList) {
             String[] rowData = new String[fields.length];
@@ -128,12 +130,19 @@ public class Printer {
     }
 
     /**
-     * Prints a simple menu or list of options, optionally with a title.
+     * Prints a visually distinct section header.
+     */
+    public static void printHeader(String msg) {
+        System.out.println();
+        System.out.println("========== " + msg + " ==========");
+    }
+
+    /**
+     * Prints a menu or list of options, optionally with a title.
      */
     public static void printMenu(String title, List<String> options) {
         if (title != null && !title.isEmpty()) {
-            System.out.println();
-            System.out.println("=== " + title + " ===");
+            printHeader(title);
         }
         for (String option : options) {
             System.out.println(option);
@@ -141,30 +150,49 @@ public class Printer {
     }
 
     /**
-     * Prints an error message in a standardized format.
+     * Prints an error message.
      */
     public static void printErrorMessage(String message) {
         System.out.println("[ERROR] " + message);
     }
 
     /**
-     * Prints an info message in a standardized format.
+     * Prints an info message.
      */
     public static void printInfoMessage(String message) {
         System.out.println("[INFO] " + message);
     }
 
     /**
-     * Prints a success message in a standardized format.
+     * Prints a success message.
      */
     public static void printSuccessMessage(String message) {
         System.out.println("[SUCCESS] " + message);
     }
 
     /**
-     * Prints a prompt for user input (with no newline).
+     * Prints a prompt for user input (with no newline at end).
      */
     public static void printPrompt(String prompt) {
         System.out.print(prompt + " ");
+    }
+
+    /**
+     * Prints a summary of a single Teacher in a nice format.
+     */
+    public static void printTeacher(Teacher t) {
+        if (t == null) {
+            printInfoMessage("No teacher data to display.");
+            return;
+        }
+        System.out.println("------------------------------");
+        System.out.println("ID          : " + t.getTeacherId());
+        System.out.println("Name        : " + t.getName());
+        System.out.println("Mobile      : " + t.getMobileNumber());
+        System.out.println("DOB         : " + t.getDob());
+        System.out.println("Salary      : " + t.getSalary());
+        System.out.println("Created At  : " + t.getCreatedAt());
+        System.out.println("Updated At  : " + t.getUpdatedAt());
+        System.out.println("------------------------------");
     }
 }
