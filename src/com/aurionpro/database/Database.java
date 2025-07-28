@@ -8,8 +8,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class Database {
 
 	private static Connection connection = null;
-
-	private static void connect() {
+	
+	public Database() {
 		try {
             Dotenv dotenv = Dotenv.load();
 
@@ -23,12 +23,10 @@ public class Database {
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-    }
+	}
+
 	
 	public static Connection getConnection() {
-		if (connection == null) {
-			connect();
-		} 
 		return connection;
 	}
 }
