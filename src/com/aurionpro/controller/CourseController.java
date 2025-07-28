@@ -1,10 +1,8 @@
 package com.aurionpro.controller;
 
 import java.sql.Connection;
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 
 import com.aurionpro.dao.CourseDao;
 import com.aurionpro.database.DBManager;
@@ -17,7 +15,7 @@ public class CourseController {
 	    private Scanner scanner;
 	    public CourseController(Connection connection, Scanner scanner, DBManager dbManager) {
 	        this.scanner = scanner;
-	        courseDao = new CourseDao(connection, scanner, dbManager);
+	        courseDao = new CourseDao(connection, dbManager);
 	    }
 	public void start() {
 
@@ -34,7 +32,10 @@ public class CourseController {
 				System.out.println("7> View Students of Course");
 				System.out.println("8> Show All Subjects");
 				System.out.println("9> Delete Subject");
-				System.out.println("10> Exit");
+				System.out.println("10> Delete Subject from Course");
+				System.out.println("11> Assign/Update Subject Teacher for Course");
+				System.out.println("12> UnAssign Subject Teacher for Course");
+				System.out.println("13> Exit");
 
 				int input =  scanner.nextInt();
 				switch (input) {
@@ -75,6 +76,18 @@ public class CourseController {
 					break;
 				}
 				case 10: {
+					deleteSubjectFromCourse();
+					break;
+				}
+				case 11: {
+					assignTeacherToCourseSubject();
+					break;
+				}
+				case 12: {
+					unassignTeacherFromCourseSubject();
+					break;
+				}
+				case 13: {
 					System.out.println("Exiting From Course Management ... ");
 					return;
 				}
@@ -92,6 +105,7 @@ public class CourseController {
 
 		}
 	}
+	
 	private void deleteSubject() {
 		showAllSubject();
 		try {
@@ -155,7 +169,88 @@ public class CourseController {
 		}
 	}
 	private void addSubjectToCourse() {
-	    	courseDao.addSubjectToCourse();
+		try {
+			System.out.println();
+			System.out.print("Enter Course ID: ");
+			int courseId = scanner.nextInt();
+
+			if (!courseDao.isCourseExist(courseId)) {
+				System.out.println("Course does not exist.");
+				return;
+			}
+
+			while (true) {
+				showAllSubject();
+				System.out.println("Enter Subject ID to add to this course:");
+				System.out.println("Enter 0 to exit.");
+				int subjectId = scanner.nextInt();
+
+				if (subjectId == 0) {
+					return;
+				}
+
+				if (!courseDao.isSubjectExist(courseId)) {
+					System.out.println("Subject does not exist.");
+					continue;
+				}
+
+				if (courseDao.isSubjectCourseMapExist(subjectId, courseId)) {
+					System.out.println("This subject is already assigned to this course.");
+					continue;
+				}
+
+				courseDao.addSubjectToCourse(subjectId,courseId);
+			}
+
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please enter numbers only.");
+			scanner.next();
+		} catch (Exception e) {
+			System.out.println("An unexpected error occurred.");
+			e.printStackTrace();
+		}
+
+	    	
+	}
+	
+	private void deleteSubjectFromCourse() {
+		try {
+			System.out.println();
+			System.out.print("Enter Course ID: ");
+			int courseId = scanner.nextInt();
+
+			if (!courseDao.isCourseExist(courseId)) {
+				System.out.println("Course does not exist.");
+				return;
+			}
+
+			while (true) {
+				courseDao.showSubjectOfCourse(courseId);
+				System.out.println();
+				System.out.println("Enter Subject ID to Delete from this course:");
+				System.out.println("Enter 0 to exit.");
+				int subjectId = scanner.nextInt();
+
+				if (subjectId == 0) {
+					return;
+				}
+
+				if (!courseDao.isSubjectCourseMapExist(subjectId, courseId)) {
+					System.out.println("This subject is not exist in course.");
+					continue;
+				}
+				courseDao.deleteSubjectFromCourse(subjectId, courseId);
+			}
+
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please enter numbers only.");
+			scanner.next();
+		} catch (Exception e) {
+			System.out.println("An unexpected error occurred.");
+			e.printStackTrace();
+		}
+
+	    	
 	}
 
 	private void addNewSubject() {
@@ -194,6 +289,102 @@ public class CourseController {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	
+	
+	private void assignTeacherToCourseSubject() {
+		try {
+			System.out.println();
+			System.out.print("Enter Course ID: ");
+			int courseId = scanner.nextInt();
+
+			if (!courseDao.isCourseExist(courseId)) {
+				System.out.println("Course does not exist.");
+				return;
+			}
+
+			while (true) {
+				courseDao.showSubjectAndTeacherOfCourse(courseId);
+				System.out.println();
+				System.out.println("Enter Subject ID to Update Teacher:");
+				System.out.println("Enter 0 to exit.");
+				int subjectId = scanner.nextInt();
+				if (subjectId == 0) {
+					return;
+				}
+
+				if (!courseDao.isSubjectCourseMapExist(subjectId, courseId)) {
+					System.out.println("This subject is not exist in course.");
+					continue;
+				}
+				
+				if (courseDao.isTeacherSubjectCourseMapExist(subjectId, courseId)) {
+				    System.out.println("Teacher already assigned to this subject, To Update 1st Unassign Teacher");
+				    continue;
+				}
+				courseDao.showAllTeacherForSubject(subjectId);
+				System.out.println("Enter Teacher ID to Add Teacher:");
+				System.out.println("Enter 0 to exit.");
+				int teacherId = scanner.nextInt();
+				
+				if (!courseDao.isTeacherSubejctMapExist(subjectId, teacherId)) {
+					System.out.println("This Teacher is not exist in this Subject.");
+					continue;
+				}
+				
+			
+				courseDao.assignTeacherToCourseSubject(teacherId,courseId,subjectId);
+			}
+
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please enter numbers only.");
+			scanner.next();
+		} catch (Exception e) {
+			System.out.println("An unexpected error occurred.");
+			e.printStackTrace();
+		}
+
+	    	
+	}
+	
+	
+	private void unassignTeacherFromCourseSubject() {
+		try {
+			System.out.println();
+			System.out.print("Enter Course ID: ");
+			int courseId = scanner.nextInt();
+
+			if (!courseDao.isCourseExist(courseId)) {
+				System.out.println("Course does not exist.");
+				return;
+			}
+
+			while (true) {
+				courseDao.showSubjectAndTeacherOfCourse(courseId);
+				System.out.println();
+				System.out.println("Enter Subject ID to Update Teacher:");
+				System.out.println("Enter 0 to exit.");
+				int subjectId = scanner.nextInt();
+				if (subjectId == 0) {
+					return;
+				}
+
+				if (!courseDao.isSubjectCourseMapExist(subjectId, courseId)) {
+					System.out.println("This subject is not exist in course.");
+					continue;
+				}
+				courseDao.unassignTeacherFromCourseSubject(courseId, subjectId);
+			}
+
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please enter numbers only.");
+			scanner.next();
+		} catch (Exception e) {
+			System.out.println("An unexpected error occurred.");
+			e.printStackTrace();
+		}
+
 	}
 	private void showAllCourse() {
 		courseDao.showAllCourse();
