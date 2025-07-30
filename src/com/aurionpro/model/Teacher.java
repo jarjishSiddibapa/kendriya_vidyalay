@@ -1,28 +1,29 @@
 package com.aurionpro.model;
 
+<<<<<<< HEAD
 import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Teacher {
-    private int teacherId; // auto-assigned by DB
-    private String name;
-    private String mobileNumber;
-    private Date dob;
-    private double salary;
-    private Timestamp createdAt; // auto-assigned by DB
-    private Timestamp updatedAt; // auto-assigned by DB
-    private TeacherProfile profile; // has a relationship!!!
-	
+	private int teacherId; // auto-assigned by DB
+	private String name;
+	private String mobileNumber;
+	private Date dob;
+	private double salary;
+	private Timestamp createdAt; // auto-assigned by DB
+	private Timestamp updatedAt; // auto-assigned by DB
+	private TeacherProfile profile; // has a relationship!!!
+
 	public Teacher() {
 		super();
 	}
-	
-    public Teacher(String name, String mobileNumber, Date dob, double salary) {
-        this.name = name;
-        this.mobileNumber = mobileNumber;
-        this.dob = dob;
-        this.salary = salary;
-    }
+
+	public Teacher(String name, String mobileNumber, Date dob, double salary) {
+		this.name = name;
+		this.mobileNumber = mobileNumber;
+		this.dob = dob;
+		this.salary = salary;
+	}
 
 	public int getTeacherId() {
 		return teacherId;
@@ -79,25 +80,24 @@ public class Teacher {
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
+
 	public TeacherProfile getProfile() {
 		return profile;
 	}
-	
+
 	public void setProfile(TeacherProfile profile) {
-		this.profile = profile; 
+		this.profile = profile;
 	}
-    
+
 	@Override
-    public String toString() {
-        return "Teacher{" +
-                "teacherId=" + teacherId +
-                ", name='" + name + '\'' +
-                ", mobileNumber='" + mobileNumber + '\'' +
-                ", dob=" + dob +
-                ", salary=" + salary +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
+	public String toString() {
+		return "Teacher{" + "teacherId=" + teacherId + ", name='" + name + '\'' + ", mobileNumber='" + mobileNumber
+				+ '\'' + ", dob=" + dob + ", salary=" + salary + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+				+ '}';
+	}
 }
+=======
+public class Teacher {
+
+}
+>>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6

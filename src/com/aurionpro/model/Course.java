@@ -1,10 +1,10 @@
 package com.aurionpro.model;
 
 public class Course {
+<<<<<<< HEAD
 	private String courseName;
 	private int coursefees;
 	private String courseDescription;
-	
 
 	public Course() {
 		super();
@@ -40,6 +40,7 @@ public class Course {
 	public void setCourseDescription(String courseDescription) {
 		this.courseDescription = courseDescription;
 	}
+=======
+>>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 
-	
 }

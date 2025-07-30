@@ -11,13 +11,13 @@ public class KendriyaVidyalayTestDriver {
 	public static void main(String[] args) {
 		System.out.println("Welcome to Kendriya Vidyalay. ❤️");
 		Database database = new Database();
-		
+
 		Scanner scanner = new Scanner(System.in);
-	    DBManager dbManager = new DBManager(database.getConnection());
-	    SchoolController schoolController = new SchoolController(database.getConnection(),scanner,dbManager);
-	    schoolController.start();
+		DBManager dbManager = new DBManager(database.getConnection());
+		SchoolController schoolController = new SchoolController(database.getConnection(), scanner, dbManager);
+		schoolController.start();
 	}
-	
-	
-	
+
 }
+
+

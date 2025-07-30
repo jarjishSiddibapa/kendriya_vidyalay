@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Eclipse-specific files
 .classpath
 .project
@@ -47,3 +48,61 @@ hs_err_pid*
 
 # Environment variables, secrets, etc.
 .env
+=======
+# Ignore Maven/Gradle build output
+target/
+bin/
+build/
+out/
+*.class
+
+# IDE files
+*.iml
+.idea/
+*.ipr
+*.iws
+.vscode/
+*.sw?
+*.sublime*
+!.mvn/wrapper/maven-wrapper.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment/Properties/Secrets
+*.env
+*.properties
+*.db
+
+# MySQL Workbench files
+*.mwb
+*.sql.bak
+
+# Eclipse files
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ IDEA
+*.idea/
+*.iml
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# Ignore JAR/WAR/EAR files
+*.jar
+*.war
+*.ear
+>>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
