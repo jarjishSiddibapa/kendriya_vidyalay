@@ -1,5 +1,6 @@
 package com.aurionpro.model;
 
+<<<<<<< HEAD
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -95,3 +96,8 @@ public class Teacher {
 				+ '}';
 	}
 }
+=======
+public class Teacher {
+
+}
+>>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
