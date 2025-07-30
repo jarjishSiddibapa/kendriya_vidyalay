@@ -1,28 +1,31 @@
 package com.aurionpro.model;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 public class Teacher {
-    private int teacherId; // auto-assigned by DB
-    private String name;
-    private String mobileNumber;
-    private Date dob;
-    private double salary;
-    private Timestamp createdAt; // auto-assigned by DB
-    private Timestamp updatedAt; // auto-assigned by DB
-    private TeacherProfile profile; // has a relationship!!!
-	
+	private int teacherId;
+	private String name;
+	private String mobileNumber;
+	private Date dateOfBirth;
+	private double salary;
+	private boolean isActive;
+	private Date createdAt;
+	private Date updatedAt;
+
 	public Teacher() {
-		super();
 	}
-	
-    public Teacher(String name, String mobileNumber, Date dob, double salary) {
-        this.name = name;
-        this.mobileNumber = mobileNumber;
-        this.dob = dob;
-        this.salary = salary;
-    }
+
+	public Teacher(int teacherId, String name, String mobileNumber, Date dateOfBirth, double salary, boolean isActive,
+			Date createdAt, Date updatedAt) {
+		this.teacherId = teacherId;
+		this.name = name;
+		this.mobileNumber = mobileNumber;
+		this.dateOfBirth = dateOfBirth;
+		this.salary = salary;
+		this.isActive = isActive;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 
 	public int getTeacherId() {
 		return teacherId;
@@ -48,12 +51,12 @@ public class Teacher {
 		this.mobileNumber = mobileNumber;
 	}
 
-	public Date getDob() {
-		return dob;
+	public Date getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setDob(Date dob) {
-		this.dob = dob;
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public double getSalary() {
@@ -64,40 +67,27 @@ public class Teacher {
 		this.salary = salary;
 	}
 
-	public Timestamp getCreatedAt() {
+	public boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Timestamp createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Timestamp getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Timestamp updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
-	
-	public TeacherProfile getProfile() {
-		return profile;
-	}
-	
-	public void setProfile(TeacherProfile profile) {
-		this.profile = profile; 
-	}
-    
-	@Override
-    public String toString() {
-        return "Teacher{" +
-                "teacherId=" + teacherId +
-                ", name='" + name + '\'' +
-                ", mobileNumber='" + mobileNumber + '\'' +
-                ", dob=" + dob +
-                ", salary=" + salary +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
 }

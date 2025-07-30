@@ -4,17 +4,24 @@ public class TeacherProfile {
 	private int profileId;
 	private String city;
 	private String email;
-	private String alternateNumber;
+	private String alternateNumber; // Optional
 	private String bloodGroup;
-	private int teacherId; 
-	
-	public TeacherProfile(String city, String email, String alternateNumber, String bloodGroup, int teacherId) {
-        this.city = city;
-        this.email = email;
-        this.alternateNumber = alternateNumber;
-        this.bloodGroup = bloodGroup;
-        this.teacherId = teacherId;
-    }
+	private int teacherId;
+	private boolean isActive;
+
+	public TeacherProfile() {
+	}
+
+	public TeacherProfile(int profileId, String city, String email, String alternateNumber, String bloodGroup,
+			int teacherId, boolean isActive) {
+		this.profileId = profileId;
+		this.city = city;
+		this.email = email;
+		this.alternateNumber = alternateNumber;
+		this.bloodGroup = bloodGroup;
+		this.teacherId = teacherId;
+		this.isActive = isActive;
+	}
 
 	public int getProfileId() {
 		return profileId;
@@ -63,16 +70,12 @@ public class TeacherProfile {
 	public void setTeacherId(int teacherId) {
 		this.teacherId = teacherId;
 	}
-	
-	@Override
-	public String toString() {
-	    return "TeacherProfile{" +
-	            "profileId=" + profileId +
-	            ", city='" + city + '\'' +
-	            ", email='" + email + '\'' +
-	            ", alternateNumber='" + alternateNumber + '\'' +
-	            ", bloodGroup='" + bloodGroup + '\'' +
-	            ", teacherId=" + teacherId +
-	            '}';
+
+	public boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 }
