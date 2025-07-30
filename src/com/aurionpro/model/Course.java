@@ -4,7 +4,6 @@ public class Course {
 	private String courseName;
 	private int coursefees;
 	private String courseDescription;
-	
 
 	public Course() {
 		super();
@@ -41,5 +40,4 @@ public class Course {
 		this.courseDescription = courseDescription;
 	}
 
-	
 }

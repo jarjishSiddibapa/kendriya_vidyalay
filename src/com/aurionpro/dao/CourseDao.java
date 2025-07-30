@@ -170,87 +170,83 @@ public class CourseDao {
 	}
 
 	public void deleteSubjectFromCourse(int subjectId, int courseId) {
-	    String updateQuery = "UPDATE course_subject_map SET is_active = FALSE WHERE course_id = ? AND subject_id = ?";
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
-	        preparedStatement.setInt(1, courseId);
-	        preparedStatement.setInt(2, subjectId);
+		String updateQuery = "UPDATE course_subject_map SET is_active = FALSE WHERE course_id = ? AND subject_id = ?";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+			preparedStatement.setInt(1, courseId);
+			preparedStatement.setInt(2, subjectId);
 
-	        int rowsUpdated = preparedStatement.executeUpdate();
-	        if (rowsUpdated > 0) {
-	            System.out.println("Subject soft-deleted from course successfully.");
-	        } else {
-	        	System.out.println("Failed to soft-deleted subject to course.");
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Database error occurred while soft-deleting subject from course.");
-	        e.printStackTrace();
-	    }
+			int rowsUpdated = preparedStatement.executeUpdate();
+			if (rowsUpdated > 0) {
+				System.out.println("Subject soft-deleted from course successfully.");
+			} else {
+				System.out.println("Failed to soft-deleted subject to course.");
+			}
+		} catch (SQLException e) {
+			System.out.println("Database error occurred while soft-deleting subject from course.");
+			e.printStackTrace();
+		}
 	}
 
 	public void assignTeacherToCourseSubject(int teacherId, int courseId, int subjectId) {
-		 String query = "INSERT INTO teacher_course_subject_map (teacher_id, course_id, subject_id) VALUES (?, ?, ?)";
-		 try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	        preparedStatement.setInt(1, teacherId);
-	        preparedStatement.setInt(2, courseId);
-	        preparedStatement.setInt(3, subjectId);
+		String query = "INSERT INTO teacher_course_subject_map (teacher_id, course_id, subject_id) VALUES (?, ?, ?)";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, teacherId);
+			preparedStatement.setInt(2, courseId);
+			preparedStatement.setInt(3, subjectId);
 
-	        int rowsInserted = preparedStatement.executeUpdate();
-	        if (rowsInserted > 0) {
-	            System.out.println("Teacher assigned to subject in course successfully.");
-	        } else {
-	            System.out.println("Assignment failed.");
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error while assigning teacher to subject in course.");
-	        e.printStackTrace();
-	    }
+			int rowsInserted = preparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+				System.out.println("Teacher assigned to subject in course successfully.");
+			} else {
+				System.out.println("Assignment failed.");
+			}
+		} catch (SQLException e) {
+			System.out.println("Error while assigning teacher to subject in course.");
+			e.printStackTrace();
+		}
 	}
-	
-	public void unassignTeacherFromCourseSubject( int courseId, int subjectId) {
-	    String query = "UPDATE teacher_course_subject_map SET is_active = FALSE WHERE  course_id = ? AND subject_id = ?";
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	        preparedStatement.setInt(1, courseId);
-	        preparedStatement.setInt(2, subjectId);
 
-	        int rowsUpdated = preparedStatement.executeUpdate();
-	        if (rowsUpdated > 0) {
-	            System.out.println("Teacher unassigned from subject in course (soft delete).");
-	        } else {
-	            System.out.println("No matching assignment found or already inactive.");
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error while unassigning teacher.");
-	        e.printStackTrace();
-	    }
+	public void unassignTeacherFromCourseSubject(int courseId, int subjectId) {
+		String query = "UPDATE teacher_course_subject_map SET is_active = FALSE WHERE  course_id = ? AND subject_id = ?";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, courseId);
+			preparedStatement.setInt(2, subjectId);
+
+			int rowsUpdated = preparedStatement.executeUpdate();
+			if (rowsUpdated > 0) {
+				System.out.println("Teacher unassigned from subject in course (soft delete).");
+			} else {
+				System.out.println("No matching assignment found or already inactive.");
+			}
+		} catch (SQLException e) {
+			System.out.println("Error while unassigning teacher.");
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void showSubjectAndTeacherOfCourse(int courseId) {
-	    String query = "SELECT * FROM get_subjects_and_teacher_by_course_id(?)";
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	        preparedStatement.setInt(1, courseId);
-	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-	            Printer.printTable(resultSet);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		String query = "SELECT * FROM get_subjects_and_teacher_by_course_id(?)";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, courseId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Printer.printTable(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void showAllTeacherForSubject(int subjectId) {
-	    String query = "SELECT * FROM get_teachers_by_subject_id(?)";
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	        preparedStatement.setInt(1, subjectId); 
-	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-	            Printer.printTable(resultSet);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
+		String query = "SELECT * FROM get_teachers_by_subject_id(?)";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, subjectId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Printer.printTable(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
-
-
-
 
 	public boolean isCourseExist(int id) {
 		return dbManager.isExist(id, Table_ID.course_id, Table.Courses);
@@ -264,28 +260,26 @@ public class CourseDao {
 		return dbManager.isMapExist(subject_id, course_id, Table_ID.subject_id, Table_ID.course_id,
 				Table_Map.course_subject_map);
 	}
-	
+
 	public boolean isTeacherSubejctMapExist(int subject_id, int teacher_id) {
 		return dbManager.isMapExist(subject_id, teacher_id, Table_ID.subject_id, Table_ID.teacher_id,
 				Table_Map.teacher_subject_map);
 	}
 
 	public boolean isTeacherSubjectCourseMapExist(int subjectId, int courseId) {
-	    String query = "SELECT 1 FROM teacher_course_subject_map " +
-	                   "WHERE course_id = ? AND subject_id = ? AND is_active = TRUE " +
-	                   "LIMIT 1";
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-	        preparedStatement.setInt(1, courseId);
-	        preparedStatement.setInt(2, subjectId);
+		String query = "SELECT 1 FROM teacher_course_subject_map "
+				+ "WHERE course_id = ? AND subject_id = ? AND is_active = TRUE " + "LIMIT 1";
+		try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+			preparedStatement.setInt(1, courseId);
+			preparedStatement.setInt(2, subjectId);
 
-	        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-	            return resultSet.next();  // true if record exists
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				return resultSet.next(); // true if record exists
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
-
 
 }

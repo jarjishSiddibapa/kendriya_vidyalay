@@ -10,13 +10,15 @@ import com.aurionpro.model.Course;
 import com.aurionpro.model.Subject;
 
 public class CourseController {
-	    private CourseDao courseDao = null;
-	   
-	    private Scanner scanner;
-	    public CourseController(Connection connection, Scanner scanner, DBManager dbManager) {
-	        this.scanner = scanner;
-	        courseDao = new CourseDao(connection, dbManager);
-	    }
+	private CourseDao courseDao = null;
+
+	private Scanner scanner;
+
+	public CourseController(Connection connection, Scanner scanner, DBManager dbManager) {
+		this.scanner = scanner;
+		courseDao = new CourseDao(connection, dbManager);
+	}
+
 	public void start() {
 
 		while (true) {
@@ -37,7 +39,7 @@ public class CourseController {
 				System.out.println("12> UnAssign Subject Teacher for Course");
 				System.out.println("13> Exit");
 
-				int input =  scanner.nextInt();
+				int input = scanner.nextInt();
 				switch (input) {
 				case 1: {
 					showAllCourse();
@@ -105,7 +107,7 @@ public class CourseController {
 
 		}
 	}
-	
+
 	private void deleteSubject() {
 		showAllSubject();
 		try {
@@ -121,9 +123,11 @@ public class CourseController {
 			e.printStackTrace();
 		}
 	}
+
 	private void showAllSubject() {
 		courseDao.showAllSubject();
 	}
+
 	private void showStudentsOfCourse() {
 		try {
 			System.out.println();
@@ -138,6 +142,7 @@ public class CourseController {
 			e.printStackTrace();
 		}
 	}
+
 	private void showSubjectOfCourse() {
 		try {
 			System.out.println();
@@ -152,6 +157,7 @@ public class CourseController {
 			e.printStackTrace();
 		}
 	}
+
 	private void deleteCourse() {
 		showAllCourse();
 		try {
@@ -168,6 +174,7 @@ public class CourseController {
 			e.printStackTrace();
 		}
 	}
+
 	private void addSubjectToCourse() {
 		try {
 			System.out.println();
@@ -199,7 +206,7 @@ public class CourseController {
 					continue;
 				}
 
-				courseDao.addSubjectToCourse(subjectId,courseId);
+				courseDao.addSubjectToCourse(subjectId, courseId);
 			}
 
 		} catch (InputMismatchException e) {
@@ -210,9 +217,8 @@ public class CourseController {
 			e.printStackTrace();
 		}
 
-	    	
 	}
-	
+
 	private void deleteSubjectFromCourse() {
 		try {
 			System.out.println();
@@ -250,25 +256,24 @@ public class CourseController {
 			e.printStackTrace();
 		}
 
-	    	
 	}
 
 	private void addNewSubject() {
 		try {
 			System.out.print("Enter Subject Name: ");
 			String subjectName = scanner.next().trim();
-			
+
 			Subject subject = new Subject(subjectName);
 			courseDao.addNewSubject(subject);
-		}
-		catch (InputMismatchException e) {
+		} catch (InputMismatchException e) {
 			System.out.println("Invalid input format.");
 		} catch (Exception e) {
 			System.out.println("Unexpected error occurred.");
 			e.printStackTrace();
 		}
-		
+
 	}
+
 	private void addNewCourse() {
 		try {
 			System.out.print("Enter Course Name: ");
@@ -279,20 +284,17 @@ public class CourseController {
 
 			System.out.print("Enter Course Description: ");
 			String courseDescription = scanner.next();
-			Course course = new Course(courseName,courseFees,courseDescription);
+			Course course = new Course(courseName, courseFees, courseDescription);
 			courseDao.addNewCourse(course);
-		}
-		catch (InputMismatchException e) {
+		} catch (InputMismatchException e) {
 			System.out.println("Invalid input format.");
 		} catch (Exception e) {
 			System.out.println("Unexpected error occurred.");
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	
-	
+
 	private void assignTeacherToCourseSubject() {
 		try {
 			System.out.println();
@@ -318,23 +320,22 @@ public class CourseController {
 					System.out.println("This subject is not exist in course.");
 					continue;
 				}
-				
+
 				if (courseDao.isTeacherSubjectCourseMapExist(subjectId, courseId)) {
-				    System.out.println("Teacher already assigned to this subject, To Update 1st Unassign Teacher");
-				    continue;
+					System.out.println("Teacher already assigned to this subject, To Update 1st Unassign Teacher");
+					continue;
 				}
 				courseDao.showAllTeacherForSubject(subjectId);
 				System.out.println("Enter Teacher ID to Add Teacher:");
 				System.out.println("Enter 0 to exit.");
 				int teacherId = scanner.nextInt();
-				
+
 				if (!courseDao.isTeacherSubejctMapExist(subjectId, teacherId)) {
 					System.out.println("This Teacher is not exist in this Subject.");
 					continue;
 				}
-				
-			
-				courseDao.assignTeacherToCourseSubject(teacherId,courseId,subjectId);
+
+				courseDao.assignTeacherToCourseSubject(teacherId, courseId, subjectId);
 			}
 
 		} catch (InputMismatchException e) {
@@ -345,10 +346,8 @@ public class CourseController {
 			e.printStackTrace();
 		}
 
-	    	
 	}
-	
-	
+
 	private void unassignTeacherFromCourseSubject() {
 		try {
 			System.out.println();
@@ -386,10 +385,9 @@ public class CourseController {
 		}
 
 	}
+
 	private void showAllCourse() {
 		courseDao.showAllCourse();
 	}
-	
-	
-	
+
 }
