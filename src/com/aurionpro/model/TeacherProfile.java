@@ -7,6 +7,7 @@ public class TeacherProfile {
 	private String alternateNumber; // Optional
 	private String bloodGroup;
 	private int teacherId;
+
 	private boolean isActive;
 
 	public TeacherProfile() {
@@ -20,7 +21,9 @@ public class TeacherProfile {
 		this.alternateNumber = alternateNumber;
 		this.bloodGroup = bloodGroup;
 		this.teacherId = teacherId;
+
 		this.isActive = isActive;
+
 	}
 
 	public int getProfileId() {
@@ -71,11 +74,13 @@ public class TeacherProfile {
 		this.teacherId = teacherId;
 	}
 
+
 	public boolean getIsActive() {
 		return isActive;
 	}
 
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
-	}
+  }
+
 }

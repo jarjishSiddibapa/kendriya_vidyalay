@@ -192,10 +192,13 @@ public class Printer {
 		System.out.println("ID          : " + t.getTeacherId());
 		System.out.println("Name        : " + t.getName());
 		System.out.println("Mobile      : " + t.getMobileNumber());
+
 		System.out.println("DOB         : " + t.getDateOfBirth());
+
 		System.out.println("Salary      : " + t.getSalary());
 		System.out.println("Created At  : " + t.getCreatedAt());
 		System.out.println("Updated At  : " + t.getUpdatedAt());
 		System.out.println("------------------------------");
 	}
 }
+
