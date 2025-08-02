@@ -1,20 +1,24 @@
 package com.aurionpro.manager.student;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aurionpro.database.Database;
 import com.aurionpro.model.Student;
 import com.aurionpro.model.StudentProfile;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StudentManager {
 	private Connection conn;
 
 	public StudentManager() {
 		Database db = new Database();
-		db.connect();
-		this.conn = db.connection;
+//		db.connect();
+//		this.conn = db.connection;
 		if (this.conn == null) {
 			System.out.println("Failed to establish database connection!");
 			throw new RuntimeException("DB Connection is null");

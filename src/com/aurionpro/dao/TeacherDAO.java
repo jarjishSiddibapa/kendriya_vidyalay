@@ -162,8 +162,8 @@ public class TeacherDAO {
 		teacher.setDateOfBirth(resultSet.getDate("dob"));
 		teacher.setSalary(resultSet.getDouble("salary"));
 		teacher.setIsActive(resultSet.getBoolean("is_active"));
-		teacher.setCreatedAt(resultSet.getDate("created_at"));
-		teacher.setUpdatedAt(resultSet.getDate("updated_at"));
+		teacher.setCreatedAt(resultSet.getTimestamp("created_at"));
+		teacher.setUpdatedAt(resultSet.getTimestamp("updated_at"));
 		return teacher;
 	}
 }
