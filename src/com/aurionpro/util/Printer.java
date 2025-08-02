@@ -1,13 +1,13 @@
 package com.aurionpro.util;
 
-import com.aurionpro.model.Teacher;
-
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.aurionpro.model.Teacher;
 
 /**
  * Utility class for printing tabular data, entity info, menus, prompts, and
@@ -192,10 +192,13 @@ public class Printer {
 		System.out.println("ID          : " + t.getTeacherId());
 		System.out.println("Name        : " + t.getName());
 		System.out.println("Mobile      : " + t.getMobileNumber());
-		System.out.println("DOB         : " + t.getDob());
+
+		System.out.println("DOB         : " + t.getDateOfBirth());
+
 		System.out.println("Salary      : " + t.getSalary());
 		System.out.println("Created At  : " + t.getCreatedAt());
 		System.out.println("Updated At  : " + t.getUpdatedAt());
 		System.out.println("------------------------------");
 	}
 }
+

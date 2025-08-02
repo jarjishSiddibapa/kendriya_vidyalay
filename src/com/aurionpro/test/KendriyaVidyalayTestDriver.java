@@ -17,7 +17,5 @@ public class KendriyaVidyalayTestDriver {
 		SchoolController schoolController = new SchoolController(database.getConnection(), scanner, dbManager);
 		schoolController.start();
 	}
-
 }
-
 
