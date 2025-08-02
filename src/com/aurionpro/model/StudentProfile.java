@@ -11,13 +11,7 @@ public class StudentProfile {
 	public StudentProfile() {
 	}
 
-<<<<<<< HEAD
 	public StudentProfile(String city, String email, String guardianNumber, String bloodGroup, int studentId) {
-=======
-	public StudentProfile(int profileId, String city, String email, String guardianNumber, String bloodGroup,
-			int studentId) {
-		this.profileId = profileId;
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 		this.city = city;
 		this.email = email;
 		this.guardianNumber = guardianNumber;
@@ -25,10 +19,7 @@ public class StudentProfile {
 		this.studentId = studentId;
 	}
 
-<<<<<<< HEAD
 	// Getters and Setters ...
-=======
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 	public int getProfileId() {
 		return profileId;
 	}
@@ -76,7 +67,6 @@ public class StudentProfile {
 	public void setStudentId(int studentId) {
 		this.studentId = studentId;
 	}
-<<<<<<< HEAD
 
 	@Override
 	public String toString() {
@@ -84,6 +74,4 @@ public class StudentProfile {
 				+ ", guardianNumber='" + guardianNumber + '\'' + ", bloodGroup='" + bloodGroup + '\'' + ", studentId="
 				+ studentId + '}';
 	}
-=======
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 }

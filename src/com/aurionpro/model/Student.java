@@ -1,29 +1,21 @@
 package com.aurionpro.model;
 
-<<<<<<< HEAD
 import java.sql.Date;
 import java.sql.Timestamp;
-=======
-import java.util.Date;
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 
 public class Student {
 	private int studentId;
 	private String name;
 	private String mobileNumber;
 	private Date dob;
-<<<<<<< HEAD
 	private boolean isActive;
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
 	private StudentProfile profile;
-=======
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 
 	public Student() {
 	}
 
-<<<<<<< HEAD
 	public Student(String name, String mobileNumber, Date dob) {
 		this.name = name;
 		this.mobileNumber = mobileNumber;
@@ -32,15 +24,6 @@ public class Student {
 	}
 
 	// Getters and Setters ...
-=======
-	public Student(int studentId, String name, String mobileNumber, Date dob) {
-		this.studentId = studentId;
-		this.name = name;
-		this.mobileNumber = mobileNumber;
-		this.dob = dob;
-	}
-
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 	public int getStudentId() {
 		return studentId;
 	}
@@ -72,7 +55,6 @@ public class Student {
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
-<<<<<<< HEAD
 
 	public boolean isActive() {
 		return isActive;
@@ -112,6 +94,4 @@ public class Student {
 				+ '\'' + ", dob=" + dob + ", isActive=" + isActive + ", createdAt=" + createdAt + ", updatedAt="
 				+ updatedAt + ", profile=" + profile + '}';
 	}
-=======
->>>>>>> a7da5ca398f61630a65a07f5a722169c6dfee4c6
 }
