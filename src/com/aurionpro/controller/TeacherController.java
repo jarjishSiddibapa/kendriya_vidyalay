@@ -26,6 +26,7 @@ public class TeacherController {
 		while (true) {
 			Printer.printMenu("Teacher Menu", List.of("1> Add teacher", "2> Show all teachers", "3> Assign subject",
 					"4> Show teacher's subjects", "5> Search teacher by ID", "6> Delete teacher", "7> Back"));
+
 			Printer.printPrompt("Enter your choice:");
 			int choice = 0;
 			try {
@@ -34,30 +35,19 @@ public class TeacherController {
 				Printer.printErrorMessage("Please enter a valid number.");
 				continue;
 			}
+
 			try {
 				switch (choice) {
-				case 1:
-					addTeacher();
-					break;
-				case 2:
-					showAllTeachers();
-					break;
-				case 3:
-					assignSubject();
-					break;
-				case 4:
-					showSubjects();
-					break;
-				case 5:
-					searchTeacherById();
-					break;
-				case 6:
-					deleteTeacher();
-					break;
-				case 7:
+				case 1 -> addTeacher();
+				case 2 -> showAllTeachers();
+				case 3 -> assignSubject();
+				case 4 -> showSubjects();
+				case 5 -> searchTeacherById();
+				case 6 -> deleteTeacher();
+				case 7 -> {
 					return;
-				default:
-					Printer.printErrorMessage("Invalid choice!");
+				}
+				default -> Printer.printErrorMessage("Invalid choice!");
 				}
 			} catch (Exception exception) {
 				Printer.printErrorMessage("Error: " + exception.getMessage());
@@ -203,6 +193,7 @@ public class TeacherController {
 
 	private void deleteTeacher() throws Exception {
 		Printer.printHeader("Delete Teacher (Soft Delete)");
+
 		int teacherId = readPositiveInt("Enter teacher ID to delete: ");
 		if (teacherDAO.softDeleteTeacher(teacherId)) {
 			Printer.printSuccessMessage("Teacher deleted (soft delete).");

@@ -22,136 +22,137 @@ public class TeacherDAO {
 	public boolean addTeacherWithProfile(Teacher teacher, TeacherProfile teacherProfile) throws SQLException {
 		String teacherInsertQuery = "INSERT INTO teachers (name, mobile_number, dob, salary) VALUES (?, ?, ?, ?) RETURNING teacher_id";
 		String profileInsertQuery = "INSERT INTO teacher_profiles (city, email, alternate_number, blood_group, teacher_id) VALUES (?, ?, ?, ?, ?)";
-		PreparedStatement teacherInsertStatement = null;
-		PreparedStatement profileInsertStatement = null;
-		ResultSet generatedKeys = null;
 
-		try {
+		try (PreparedStatement teacherInsertStatement = databaseConnection.prepareStatement(teacherInsertQuery);) {
 			databaseConnection.setAutoCommit(false);
 
-			teacherInsertStatement = databaseConnection.prepareStatement(teacherInsertQuery);
 			teacherInsertStatement.setString(1, teacher.getName());
 			teacherInsertStatement.setString(2, teacher.getMobileNumber());
 			teacherInsertStatement.setDate(3, teacher.getDateOfBirth());
 			teacherInsertStatement.setDouble(4, teacher.getSalary());
-			generatedKeys = teacherInsertStatement.executeQuery();
 
-			if (generatedKeys.next()) {
-				int generatedTeacherId = generatedKeys.getInt(1);
-				profileInsertStatement = databaseConnection.prepareStatement(profileInsertQuery);
-				profileInsertStatement.setString(1, teacherProfile.getCity());
-				profileInsertStatement.setString(2, teacherProfile.getEmail());
-				if (teacherProfile.getAlternateNumber() == null
-						|| teacherProfile.getAlternateNumber().trim().isEmpty()) {
-					profileInsertStatement.setNull(3, Types.VARCHAR);
+			try (ResultSet generatedKeys = teacherInsertStatement.executeQuery()) {
+				if (generatedKeys.next()) {
+					int generatedTeacherId = generatedKeys.getInt(1);
+
+					try (PreparedStatement profileInsertStatement = databaseConnection
+							.prepareStatement(profileInsertQuery)) {
+						profileInsertStatement.setString(1, teacherProfile.getCity());
+						profileInsertStatement.setString(2, teacherProfile.getEmail());
+
+						if (teacherProfile.getAlternateNumber() == null
+								|| teacherProfile.getAlternateNumber().trim().isEmpty()) {
+							profileInsertStatement.setNull(3, Types.VARCHAR);
+						} else {
+							profileInsertStatement.setString(3, teacherProfile.getAlternateNumber());
+						}
+
+						profileInsertStatement.setString(4, teacherProfile.getBloodGroup());
+						profileInsertStatement.setInt(5, generatedTeacherId);
+
+						profileInsertStatement.executeUpdate();
+					}
+
+					databaseConnection.commit();
+					return true;
 				} else {
-					profileInsertStatement.setString(3, teacherProfile.getAlternateNumber());
+					databaseConnection.rollback();
+					return false;
 				}
-				profileInsertStatement.setString(4, teacherProfile.getBloodGroup());
-				profileInsertStatement.setInt(5, generatedTeacherId);
-				profileInsertStatement.executeUpdate();
-				databaseConnection.commit();
-				return true;
+			} catch (SQLException e) {
+				databaseConnection.rollback();
+				throw e;
+			} finally {
+				databaseConnection.setAutoCommit(true);
 			}
-			databaseConnection.rollback();
-			return false;
-		} catch (SQLException exception) {
-			databaseConnection.rollback();
-			throw exception;
-		} finally {
-			if (generatedKeys != null) {
-				generatedKeys.close();
-			}
-			if (teacherInsertStatement != null) {
-				teacherInsertStatement.close();
-			}
-			if (profileInsertStatement != null) {
-				profileInsertStatement.close();
-			}
-			databaseConnection.setAutoCommit(true);
 		}
 	}
 
 	public List<Teacher> getAllTeachers() throws SQLException {
 		String selectQuery = "SELECT * FROM teachers WHERE is_active = TRUE";
-		Statement statement = databaseConnection.createStatement();
-		ResultSet resultSet = statement.executeQuery(selectQuery);
 		List<Teacher> teacherList = new ArrayList<>();
-		while (resultSet.next()) {
-			teacherList.add(mapToTeacher(resultSet));
+
+		try (Statement statement = databaseConnection.createStatement();
+				ResultSet resultSet = statement.executeQuery(selectQuery);) {
+			while (resultSet.next()) {
+				teacherList.add(mapToTeacher(resultSet));
+			}
 		}
-		resultSet.close();
-		statement.close();
 		return teacherList;
 	}
 
 	public List<String> getSubjectsByTeacherId(int teacherId) throws SQLException {
-		String selectQuery = "SELECT s.subject_name FROM teacher_subject_map tsm JOIN subjects s ON s.subject_id=tsm.subject_id WHERE tsm.teacher_id=? AND tsm.is_active=TRUE";
-		PreparedStatement preparedStatement = databaseConnection.prepareStatement(selectQuery);
-		preparedStatement.setInt(1, teacherId);
-		ResultSet resultSet = preparedStatement.executeQuery();
+		String selectQuery = "SELECT s.subject_name FROM teacher_subject_map tsm "
+				+ "JOIN subjects s ON s.subject_id = tsm.subject_id "
+				+ "WHERE tsm.teacher_id = ? AND tsm.is_active = TRUE AND s.is_active = TRUE";
 		List<String> subjects = new ArrayList<>();
-		while (resultSet.next()) {
-			subjects.add(resultSet.getString(1));
+
+		try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(selectQuery)) {
+			preparedStatement.setInt(1, teacherId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					subjects.add(resultSet.getString(1));
+				}
+			}
 		}
-		resultSet.close();
-		preparedStatement.close();
 		return subjects;
 	}
 
 	public Teacher getTeacherById(int teacherId) throws SQLException {
 		String selectQuery = "SELECT * FROM teachers WHERE teacher_id = ? AND is_active = TRUE";
-		PreparedStatement preparedStatement = databaseConnection.prepareStatement(selectQuery);
-		preparedStatement.setInt(1, teacherId);
-		ResultSet resultSet = preparedStatement.executeQuery();
-		Teacher teacher = null;
-		if (resultSet.next()) {
-			teacher = mapToTeacher(resultSet);
+		try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(selectQuery)) {
+			preparedStatement.setInt(1, teacherId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					return mapToTeacher(resultSet);
+				}
+			}
 		}
-		resultSet.close();
-		preparedStatement.close();
-		return teacher;
+		return null;
 	}
 
 	public boolean assignSubject(int teacherId, int subjectId) throws SQLException {
+		// Check that teacher and subject exist and are active
 		String teacherActiveCheck = "SELECT is_active FROM teachers WHERE teacher_id = ?";
 		String subjectActiveCheck = "SELECT is_active FROM subjects WHERE subject_id = ?";
-		PreparedStatement teacherActiveStatement = databaseConnection.prepareStatement(teacherActiveCheck);
-		PreparedStatement subjectActiveStatement = databaseConnection.prepareStatement(subjectActiveCheck);
-		teacherActiveStatement.setInt(1, teacherId);
-		subjectActiveStatement.setInt(1, subjectId);
-		ResultSet teacherActiveResultSet = teacherActiveStatement.executeQuery();
-		ResultSet subjectActiveResultSet = subjectActiveStatement.executeQuery();
-		boolean valid = false;
-		if (teacherActiveResultSet.next() && subjectActiveResultSet.next()) {
-			if (teacherActiveResultSet.getBoolean(1) && subjectActiveResultSet.getBoolean(1)) {
-				valid = true;
+
+		try (PreparedStatement teacherActiveStatement = databaseConnection.prepareStatement(teacherActiveCheck);
+				PreparedStatement subjectActiveStatement = databaseConnection.prepareStatement(subjectActiveCheck);) {
+			teacherActiveStatement.setInt(1, teacherId);
+			subjectActiveStatement.setInt(1, subjectId);
+
+			try (ResultSet teacherActiveResultSet = teacherActiveStatement.executeQuery();
+					ResultSet subjectActiveResultSet = subjectActiveStatement.executeQuery();) {
+				if (!teacherActiveResultSet.next() || !teacherActiveResultSet.getBoolean(1)) {
+					return false; // Teacher inactive or not found
+				}
+				if (!subjectActiveResultSet.next() || !subjectActiveResultSet.getBoolean(1)) {
+					return false; // Subject inactive or not found
+				}
 			}
 		}
-		teacherActiveResultSet.close();
-		subjectActiveResultSet.close();
-		teacherActiveStatement.close();
-		subjectActiveStatement.close();
-		if (!valid) {
-			return false;
+
+		// Insert or reactivate mapping
+		String assignQuery = "INSERT INTO teacher_subject_map (teacher_id, subject_id, is_active) "
+				+ "VALUES (?, ?, TRUE) "
+				+ "ON CONFLICT (teacher_id, subject_id) DO UPDATE SET is_active = TRUE, updated_at = NOW()";
+
+		try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(assignQuery)) {
+			preparedStatement.setInt(1, teacherId);
+			preparedStatement.setInt(2, subjectId);
+			int updated = preparedStatement.executeUpdate();
+			return updated > 0;
 		}
-		String assignQuery = "INSERT INTO teacher_subject_map (teacher_id, subject_id, is_active) VALUES (?, ?, TRUE) "
-				+ "ON CONFLICT (teacher_id, subject_id) DO UPDATE SET is_active=TRUE";
-		PreparedStatement preparedStatement = databaseConnection.prepareStatement(assignQuery);
-		preparedStatement.setInt(1, teacherId);
-		preparedStatement.setInt(2, subjectId);
-		int updated = preparedStatement.executeUpdate();
-		preparedStatement.close();
-		return updated > 0;
 	}
 
 	public boolean softDeleteTeacher(int teacherId) throws SQLException {
 		String deleteQuery = "UPDATE teachers SET is_active = FALSE WHERE teacher_id = ?";
-		PreparedStatement preparedStatement = databaseConnection.prepareStatement(deleteQuery);
-		preparedStatement.setInt(1, teacherId);
-		int updated = preparedStatement.executeUpdate();
-		preparedStatement.close();
-		return updated > 0;
+		try (PreparedStatement preparedStatement = databaseConnection.prepareStatement(deleteQuery)) {
+			preparedStatement.setInt(1, teacherId);
+			int updated = preparedStatement.executeUpdate();
+			return updated > 0;
+		}
 	}
 
 	private Teacher mapToTeacher(ResultSet resultSet) throws SQLException {
